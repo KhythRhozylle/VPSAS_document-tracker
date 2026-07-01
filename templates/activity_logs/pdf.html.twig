@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VPSAS Activity Logs — PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; color: #1F2937; }
+        h1 { font-size: 1.5rem; margin-bottom: 0.15rem; }
+        .system-name { color: #2563EB; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.35rem; }
+        .meta { color: #6B7280; margin-bottom: 0.35rem; font-size: 0.9rem; }
+        .filters { color: #374151; margin-bottom: 1.25rem; font-size: 0.85rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        th, td { border: 1px solid #E5E7EB; padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; word-break: break-word; }
+        th { background: #F8FAFC; font-weight: 600; }
+        tr:nth-child(even) { background: #FAFAFA; }
+        .toolbar { margin-bottom: 1rem; }
+        .toolbar button {
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        @media print {
+            .toolbar { display: none; }
+            body { margin: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button type="button" onclick="window.print()">Save as PDF / Print</button>
+    </div>
+
+    <div class="system-name">VPSAS Monitoring &amp; Tracking System</div>
+    <h1>Activity Logs Report</h1>
+    <p class="meta">Generated on {{ generatedAt }}</p>
+    <p class="filters"><strong>Filters:</strong> {{ filters }} ({{ total }} record{{ total == 1 ? '' : 's' }})</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date &amp; Time</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+                <th>Module</th>
+                <th>Description</th>
+                <th>IP Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log.createdAt|app_datetime }}</td>
+                    <td>{{ log.fullName }}</td>
+                    <td>{{ log.email }}</td>
+                    <td>{{ log.role }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.module }}</td>
+                    <td>{{ log.description }}</td>
+                    <td>{{ log.ipAddress ?? '—' }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="8">No activity logs found for the current filters.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Activity Logs — VPSAS{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-header-row">
+        <div>
+            <h1>Activity Logs</h1>
+            <p>Audit trail of system activities — Admin access only</p>
+        </div>
+        <div class="live-clock-card" data-live-clock aria-live="polite"></div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="reports-toolbar module-toolbar activity-logs-toolbar">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="search" id="activity-logs-search" class="form-control" placeholder="Search name, email, action, module..." value="{{ search }}">
+        </div>
+        <div class="module-filters activity-logs-filters">
+            <input type="date" id="activity-logs-date-from" class="form-control form-control-sm" value="{{ dateFrom }}">
+            <input type="date" id="activity-logs-date-to" class="form-control form-control-sm" value="{{ dateTo }}">
+            <select id="activity-logs-role" class="form-select form-select-sm">
+                <option value="">All Roles</option>
+                {% for roleOption in roles %}
+                    <option value="{{ roleOption }}" {{ role == roleOption ? 'selected' : '' }}>{{ roleOption }}</option>
+                {% endfor %}
+            </select>
+            <select id="activity-logs-action" class="form-select form-select-sm">
+                <option value="">All Actions</option>
+                {% for actionOption in actions %}
+                    <option value="{{ actionOption }}" {{ action == actionOption ? 'selected' : '' }}>{{ actionOption }}</option>
+                {% endfor %}
+            </select>
+            <select id="activity-logs-sort" class="form-select form-select-sm">
+                <option value="desc" {{ direction == 'desc' ? 'selected' : '' }}>Newest First</option>
+                <option value="asc" {{ direction == 'asc' ? 'selected' : '' }}>Oldest First</option>
+            </select>
+        </div>
+        <div class="export-actions">
+            <button type="button" class="btn btn-outline-secondary btn-sm export-btn" id="activity-logs-btn-print" data-export-type="print"><i class="bi bi-printer"></i> Print</button>
+            <button type="button" class="btn btn-outline-danger btn-sm export-btn" id="activity-logs-btn-pdf" data-export-type="pdf"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+            <button type="button" class="btn btn-outline-success btn-sm export-btn" id="activity-logs-btn-excel" data-export-type="excel"><i class="bi bi-file-earmark-excel"></i> Excel</button>
+            <button type="button" class="btn btn-outline-success btn-sm export-btn" id="activity-logs-btn-csv" data-export-type="csv"><i class="bi bi-filetype-csv"></i> CSV</button>
+        </div>
+    </div>
+
+    <div class="module-table-controls">
+        {% include '_per_page.html.twig' with { selectId: 'activity-logs-per-page', perPageOptions: perPageOptions, perPageSelected: perPageSelected } %}
+    </div>
+
+    <div id="activity-logs-root"
+         data-sort="{{ sort }}"
+         data-direction="{{ direction }}"
+         data-page="{{ page }}"
+         data-per-page="{{ perPageSelected }}">
+        <div id="activity-logs-table-container">
+            {% include 'activity_logs/_table.html.twig' %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="activityLogModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Activity Log Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="activity-log-modal-body">
+                <div class="text-center py-4"><div class="spinner-border text-primary"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="export-loading-overlay d-none" id="export-loading-overlay">
+    <div class="export-loading-spinner">
+        <div class="spinner-border text-primary"></div>
+        <p>Preparing export…</p>
+    </div>
+</div>
+{% endblock %}

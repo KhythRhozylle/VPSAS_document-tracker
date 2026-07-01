@@ -1,0 +1,84 @@
+{% set effectivePerPage = perPage > 0 ? perPage : (total > 0 ? total : 1) %}
+{% set totalPages = (total / effectivePerPage)|round(0, 'ceil') %}
+{% set totalPages = totalPages < 1 ? 1 : totalPages %}
+
+<div class="table-responsive">
+    <table class="table table-modern activity-logs-table">
+        <thead>
+            <tr>
+                <th>Date &amp; Time</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+                <th>Module</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if logs is empty %}
+                <tr>
+                    <td colspan="8" class="table-empty-state">
+                        <i class="bi bi-journal-x"></i>
+                        <p>No activity logs found matching your filters.</p>
+                    </td>
+                </tr>
+            {% else %}
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.createdAt|app_datetime }}</td>
+                        <td>{{ log.fullName }}</td>
+                        <td>{{ log.email }}</td>
+                        <td><span class="badge bg-secondary">{{ log.role }}</span></td>
+                        <td>
+                            {% set badgeClass = 'bg-secondary' %}
+                            {% if log.action in ['Create', 'Login', 'Account Creation'] %}
+                                {% set badgeClass = 'bg-success' %}
+                            {% elseif log.action in ['Update', 'Password Change', 'Export PDF', 'Export Excel', 'Export CSV', 'Print'] %}
+                                {% set badgeClass = 'bg-primary' %}
+                            {% elseif log.action in ['Delete', 'Login Failed'] %}
+                                {% set badgeClass = 'bg-danger' %}
+                            {% elseif log.action == 'Logout' %}
+                                {% set badgeClass = 'bg-secondary' %}
+                            {% endif %}
+                            <span class="badge {{ badgeClass }}">{{ log.action }}</span>
+                        </td>
+                        <td>{{ log.module }}</td>
+                        <td class="activity-log-description">{{ log.description }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-soft" data-action="view-log" data-id="{{ log.id }}">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination-modern">
+    <div class="page-info">
+        Showing page {{ page }} of {{ totalPages }} ({{ total }} entries)
+    </div>
+    <nav>
+        <ul class="pagination">
+            <li class="page-item {{ page <= 1 ? 'disabled' : '' }}">
+                <button type="button" class="page-link" data-action="page" data-page="{{ page - 1 }}">Previous</button>
+            </li>
+            {% for p in 1..totalPages %}
+                {% if totalPages <= 7 or p == 1 or p == totalPages or (p >= page - 1 and p <= page + 1) %}
+                    <li class="page-item {{ p == page ? 'active' : '' }}">
+                        <button type="button" class="page-link" data-action="page" data-page="{{ p }}">{{ p }}</button>
+                    </li>
+                {% elseif p == page - 2 or p == page + 2 %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                {% endif %}
+            {% endfor %}
+            <li class="page-item {{ page >= totalPages ? 'disabled' : '' }}">
+                <button type="button" class="page-link" data-action="page" data-page="{{ page + 1 }}">Next</button>
+            </li>
+        </ul>
+    </nav>
+</div>

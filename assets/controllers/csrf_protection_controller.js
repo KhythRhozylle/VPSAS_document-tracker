@@ -79,3 +79,6 @@ export function removeCsrfToken (formElement) {
 
 /* stimulusFetch: 'lazy' */
 export default 'csrf-protection-controller';
+
+// create this a navbar, it should have the icon profile, searchbar, and notification. Everything should be funationable and has no error. If the profile is clicked, it should show the user's profile and details, it should also be able to add thier profile picture. 
+

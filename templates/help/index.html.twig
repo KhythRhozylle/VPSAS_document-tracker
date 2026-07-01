@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Help Center — VPSAS{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-header-row">
+        <div>
+            <h1>Help Center</h1>
+            <p>Guides, FAQs, and system overview</p>
+        </div>
+        <div class="live-clock-card" data-live-clock aria-live="polite"></div>
+    </div>
+</div>
+
+<div class="content-card help-center" id="help-center-root">
+    <div class="help-search-box search-box mb-4">
+        <i class="bi bi-search"></i>
+        <input type="search" id="help-search" class="form-control" placeholder="Search help topics…" aria-label="Search help">
+    </div>
+    <div id="help-search-empty" class="table-empty-state d-none">
+        <i class="bi bi-search"></i>
+        <p>No help topics matched your search.</p>
+    </div>
+
+    <section class="help-summary mb-4" data-help-item data-help-tags="overview system summary features modules roles">
+        <h2 class="help-section-title"><i class="bi bi-info-circle"></i> System Summary</h2>
+        <p>The VPSAS Document Tracker helps your organization monitor, request, and report on official documents across campuses.</p>
+        <ul>
+            <li><strong>Purpose:</strong> Centralized document monitoring, reporting, and audit trail management.</li>
+            <li><strong>Main modules:</strong> Dashboard, Documents, Reports, Activity Logs, Help Center.</li>
+            <li><strong>Roles:</strong> Admin (full access including Activity Logs) and Staff (document and report access).</li>
+            <li><strong>Best practices:</strong> Keep profile details updated, use filters before exporting, and verify document status before approval.</li>
+        </ul>
+    </section>
+
+    <div class="accordion help-accordion" id="helpAccordion">
+        {% set guides = [
+            { id: 'login', icon: 'box-arrow-in-right', title: '1. Logging In', tags: 'login sign in authentication password', body: 'Go to Sign In, enter your email and password, then click Sign In. Use Sign Up to register a Staff account. Demo Admin: admin@vpsas.local / Admin123!' },
+            { id: 'dashboard', icon: 'speedometer2', title: '2. Dashboard Navigation', tags: 'dashboard overview stats charts', body: 'The dashboard shows document totals, monthly trends, recent activity, and a live Philippine date/time display. Use the sidebar to open Documents, Reports, Activity Logs (Admin), and Help Center.' },
+            { id: 'request', icon: 'file-earmark-plus', title: '3. Requesting Documents', tags: 'request create document add new', body: 'Open Documents, complete the form with campus, document type, status, particulars, amount, and nature, then click Save Document. Choose Other under Document Type to specify a custom type.' },
+            { id: 'edit', icon: 'pencil-square', title: '4. Editing Records', tags: 'edit update modify record', body: 'In Reports, click the pencil icon on a row to edit a document. Update fields in the modal and save. All edits are recorded in Activity Logs.' },
+            { id: 'manage', icon: 'folder2-open', title: '5. Managing Documents', tags: 'manage delete view documents', body: 'Use Reports to view, edit, or delete documents. Deleting requires confirmation. View details with the eye icon to inspect timestamps and status.' },
+            { id: 'reports', icon: 'bar-chart', title: '6. Generating Reports', tags: 'reports filter search generate', body: 'Open Reports to search and filter by date range, campus, document type, status, and user role. Sort newest or oldest and choose entries per page.' },
+            { id: 'print', icon: 'printer', title: '7. Printing Reports', tags: 'print report hardcopy', body: 'Apply your filters in Reports, then click Print. A print-friendly view opens in a new tab. Print actions are logged for Admin review.' },
+            { id: 'export', icon: 'download', title: '8. Exporting Reports', tags: 'export pdf excel csv download', body: 'Use PDF, Excel, or CSV buttons in Reports or Activity Logs. Exports respect current filters and show a loading indicator while preparing.' },
+            { id: 'logs', icon: 'journal-text', title: '9. Viewing Activity Logs', tags: 'activity logs audit admin trail', body: 'Admins can open Activity Logs to review login, create, update, delete, print, and export events with full old/new data in the detail modal.' },
+            { id: 'accounts', icon: 'people', title: '10. Managing User Accounts', tags: 'profile account password register', body: 'Click your avatar to update profile details, upload a photo, or change your password. Staff can register via Sign Up; Admins manage access through assigned roles.' },
+        ] %}
+
+        {% for guide in guides %}
+            <div class="accordion-item help-accordion-item" data-help-item data-help-tags="{{ guide.tags }}">
+                <h2 class="accordion-header">
+                    <button class="accordion-button {{ loop.first ? '' : 'collapsed' }}" type="button" data-bs-toggle="collapse" data-bs-target="#help-{{ guide.id }}">
+                        <i class="bi bi-{{ guide.icon }} me-2"></i> {{ guide.title }}
+                    </button>
+                </h2>
+                <div id="help-{{ guide.id }}" class="accordion-collapse collapse {{ loop.first ? 'show' : '' }}" data-bs-parent="#helpAccordion">
+                    <div class="accordion-body">{{ guide.body }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <section class="help-faq mt-4" data-help-item data-help-tags="faq questions answers">
+        <h2 class="help-section-title"><i class="bi bi-patch-question"></i> Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item help-accordion-item" data-help-item data-help-tags="request document faq">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">How do I request a document?</button></h2>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Go to Documents, fill out the required fields including campus and document type, then save.</div></div>
+            </div>
+            <div class="accordion-item help-accordion-item" data-help-item data-help-tags="export reports faq">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">How do I export reports?</button></h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Open Reports, set your filters, then click PDF, Excel, or CSV. Your export will include only filtered records.</div></div>
+            </div>
+            <div class="accordion-item help-accordion-item" data-help-item data-help-tags="activity logs access admin faq">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">Why can't I access Activity Logs?</button></h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Activity Logs are restricted to Admin users. Staff accounts cannot view or modify audit records.</div></div>
+            </div>
+            <div class="accordion-item help-accordion-item" data-help-item data-help-tags="profile account change faq">
+                <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">How do I change my account information?</button></h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion"><div class="accordion-body">Click your profile avatar in the top navbar or sidebar Profile link, update your details, optionally upload a photo, and save.</div></div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

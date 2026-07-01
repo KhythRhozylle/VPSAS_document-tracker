@@ -1,0 +1,43 @@
+<div class="navbar-dropdown-header">
+    <span class="navbar-dropdown-title">Notifications</span>
+    {% if unreadCount > 0 %}
+        <button type="button" class="navbar-dropdown-action" id="notifications-mark-all-btn" data-token="{{ csrf_token('notifications_read_all') }}">
+            Mark all read
+        </button>
+    {% endif %}
+</div>
+
+<div class="navbar-dropdown-body">
+    {% if notifications is empty %}
+        <div class="navbar-dropdown-empty">
+            <i class="bi bi-bell-slash"></i>
+            <p>No notifications yet</p>
+        </div>
+    {% else %}
+        <ul class="notification-list">
+            {% for notification in notifications %}
+                <li class="notification-item {{ not notification.isRead ? 'notification-item--unread' : '' }}"
+                    data-id="{{ notification.id }}"
+                    {% if notification.link %}data-link="{{ notification.link }}"{% endif %}>
+                    <div class="notification-icon notification-icon--{{ notification.type }}">
+                        {% if notification.type == 'success' %}
+                            <i class="bi bi-check-circle"></i>
+                        {% elseif notification.type == 'warning' %}
+                            <i class="bi bi-exclamation-triangle"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="notification-content">
+                        <p class="notification-title">{{ notification.title }}</p>
+                        <p class="notification-message">{{ notification.message }}</p>
+                        <span class="notification-time">{{ notification.createdAt|app_datetime }}</span>
+                    </div>
+                    {% if not notification.isRead %}
+                        <span class="notification-dot" aria-hidden="true"></span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>

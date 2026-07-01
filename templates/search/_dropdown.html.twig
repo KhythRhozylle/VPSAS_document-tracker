@@ -1,0 +1,28 @@
+{% if query is empty %}
+    <div class="search-dropdown-hint">Type to search documents...</div>
+{% elseif results is empty %}
+    <div class="search-dropdown-empty">
+        <i class="bi bi-search"></i>
+        <p>No results for "{{ query }}"</p>
+    </div>
+{% else %}
+    <ul class="search-dropdown-list">
+        {% for doc in results %}
+            <li>
+                <a href="{{ path('app_reports', { q: query }) }}" class="search-dropdown-item" data-doc-id="{{ doc.id }}">
+                    <span class="search-dropdown-icon"><i class="bi bi-file-earmark-text"></i></span>
+                    <span class="search-dropdown-text">
+                        <strong>{{ doc.campus }}</strong>
+                        <small>{{ doc.documentType }} · {{ doc.particulars|length > 50 ? doc.particulars|slice(0, 50) ~ '…' : doc.particulars }}</small>
+                    </span>
+                    <span class="search-dropdown-amount">₱{{ doc.amount|number_format(2, '.', ',') }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if total is defined and total > results|length %}
+        <a href="{{ path('app_reports', { q: query }) }}" class="search-dropdown-footer">
+            View all {{ total }} results <i class="bi bi-arrow-right"></i>
+        </a>
+    {% endif %}
+{% endif %}

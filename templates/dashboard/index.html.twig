@@ -1,0 +1,376 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard — VPSAS{% endblock %}
+
+{% block body %}
+<div class="dashboard-page">
+    <div class="page-header dashboard-header mb-4">
+        <div class="page-header-row">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back{% if currentUser %}, {{ currentUser.firstName }}{% endif %}!</p>
+            </div>
+            <div class="live-clock-card live-clock-card--dashboard" data-live-clock aria-live="polite"></div>
+        </div>
+    </div>
+    {# Row 1: Summary stat cards #}
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="vision-stat-card">
+                <div class="vision-stat-body">
+                    <span class="vision-stat-label">Total Documents</span>
+                    <span class="vision-stat-value">{{ totalDocuments|number_format }}</span>
+                    <span class="vision-stat-change vision-stat-change--neutral">—</span>
+                </div>
+                <div class="vision-stat-icon">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="vision-stat-card">
+                <div class="vision-stat-body">
+                    <span class="vision-stat-label">This Month</span>
+                    <span class="vision-stat-value">{{ thisMonth|number_format }}</span>
+                    <span class="vision-stat-change vision-stat-change--neutral">—</span>
+                </div>
+                <div class="vision-stat-icon">
+                    <i class="bi bi-globe2"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="vision-stat-card">
+                <div class="vision-stat-body">
+                    <span class="vision-stat-label">Today</span>
+                    <span class="vision-stat-value">{{ today|number_format }}</span>
+                    <span class="vision-stat-change vision-stat-change--neutral">—</span>
+                </div>
+                <div class="vision-stat-icon">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="vision-stat-card">
+                <div class="vision-stat-body">
+                    <span class="vision-stat-label">Total Amount</span>
+                    <span class="vision-stat-value">₱{{ totalAmount|number_format(2, '.', ',') }}</span>
+                    <span class="vision-stat-change vision-stat-change--neutral">—</span>
+                </div>
+                <div class="vision-stat-icon">
+                    <i class="bi bi-cart3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Row 2: Welcome + gauges #}
+    <div class="row g-4 mb-4">
+        <div class="col-xl-5 col-lg-12">
+            <div class="vision-card vision-welcome-card h-100">
+                <div class="vision-welcome-content">
+                    <h2 class="vision-welcome-title">Welcome back</h2>
+                    <p class="vision-welcome-subtitle">Glad to see you again! Track and manage your documents.</p>
+                    <a href="{{ path('app_documents') }}" class="vision-welcome-link">Go to documents →</a>
+                </div>
+                <div class="vision-welcome-art" aria-hidden="true"></div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="vision-card vision-gauge-card h-100">
+                <div class="vision-card-header">
+                    <h3 class="vision-card-title">Completion Rate</h3>
+                    <p class="vision-card-subtitle">From all documents</p>
+                </div>
+                <div class="vision-gauge-wrap">
+                    <svg class="vision-gauge" viewBox="0 0 200 120" aria-hidden="true">
+                        <path class="vision-gauge-track" d="M 20 100 A 80 80 0 0 1 180 100" fill="none"/>
+                        <path class="vision-gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-dasharray="251" stroke-dashoffset="251"/>
+                    </svg>
+                    <div class="vision-gauge-icon"><i class="bi bi-emoji-smile"></i></div>
+                </div>
+                <p class="vision-gauge-label"><span class="vision-gauge-value">—</span> Based on records</p>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6">
+            <div class="vision-card vision-tracking-card h-100">
+                <h3 class="vision-card-title mb-4">Tracking Overview</h3>
+                <div class="vision-tracking-grid">
+                    <div class="vision-tracking-stats">
+                        <div class="vision-tracking-stat">
+                            <span class="vision-tracking-stat-label">Recorded</span>
+                            <span class="vision-tracking-stat-value">{{ totalDocuments|number_format }}</span>
+                            <span class="vision-tracking-stat-unit">documents</span>
+                        </div>
+                        <div class="vision-tracking-stat">
+                            <span class="vision-tracking-stat-label">This month</span>
+                            <span class="vision-tracking-stat-value">{{ thisMonth|number_format }}</span>
+                            <span class="vision-tracking-stat-unit">entries</span>
+                        </div>
+                    </div>
+                    <div class="vision-circle-gauge">
+                        <svg viewBox="0 0 120 120" aria-hidden="true">
+                            <circle class="vision-circle-track" cx="60" cy="60" r="48"/>
+                            <circle class="vision-circle-fill" cx="60" cy="60" r="48"/>
+                        </svg>
+                        <div class="vision-circle-label">
+                            <span class="vision-circle-title">Status</span>
+                            <span class="vision-circle-value">—</span>
+                            <span class="vision-circle-sub">Total Score</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Row 3: Charts #}
+    <div class="row g-4 mb-4">
+        <div class="col-xl-8 col-lg-7">
+            <div class="vision-card vision-chart-card h-100">
+                <div class="vision-card-header">
+                    <h3 class="vision-card-title">Documents Overview</h3>
+                    <p class="vision-card-subtitle">Monthly document activity</p>
+                </div>
+                <div class="vision-chart-container">
+                    <canvas id="documents-overview-chart"
+                            data-labels="{{ chartLabels|json_encode|e('html_attr') }}"
+                            data-values="{{ chartValues|json_encode|e('html_attr') }}"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-5">
+            <div class="vision-card vision-chart-card h-100">
+                <div class="vision-card-header">
+                    <h3 class="vision-card-title">Activity</h3>
+                    <p class="vision-card-subtitle">Weekly breakdown</p>
+                </div>
+                <div class="vision-chart-container vision-chart-container--sm">
+                    <canvas id="activity-bar-chart"></canvas>
+                </div>
+                <div class="vision-mini-stats">
+                    <div class="vision-mini-stat">
+                        <div class="vision-mini-stat-icon"><i class="bi bi-people"></i></div>
+                        <div>
+                            <span class="vision-mini-stat-label">Documents</span>
+                            <span class="vision-mini-stat-value">{{ totalDocuments|number_format }}</span>
+                        </div>
+                    </div>
+                    <div class="vision-mini-stat">
+                        <div class="vision-mini-stat-icon"><i class="bi bi-hand-index"></i></div>
+                        <div>
+                            <span class="vision-mini-stat-label">This Month</span>
+                            <span class="vision-mini-stat-value">{{ thisMonth|number_format }}</span>
+                        </div>
+                    </div>
+                    <div class="vision-mini-stat">
+                        <div class="vision-mini-stat-icon"><i class="bi bi-cart"></i></div>
+                        <div>
+                            <span class="vision-mini-stat-label">Today</span>
+                            <span class="vision-mini-stat-value">{{ today|number_format }}</span>
+                        </div>
+                    </div>
+                    <div class="vision-mini-stat">
+                        <div class="vision-mini-stat-icon"><i class="bi bi-box"></i></div>
+                        <div>
+                            <span class="vision-mini-stat-label">Amount</span>
+                            <span class="vision-mini-stat-value">₱{{ (totalAmount / 1000)|number_format(1) }}k</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Row 4: Table + timeline #}
+    <div class="row g-4">
+        <div class="col-xl-8 col-lg-7">
+            <div class="vision-card vision-table-card h-100">
+                <div class="vision-card-header d-flex justify-content-between align-items-start flex-wrap gap-2">
+                    <div>
+                        <h3 class="vision-card-title">Documents</h3>
+                        <p class="vision-card-subtitle">{{ thisMonth|number_format }} added this month</p>
+                    </div>
+                    <i class="bi bi-check-circle vision-card-header-icon"></i>
+                </div>
+                <div class="table-responsive">
+                    <table class="vision-table">
+                        <thead>
+                            <tr>
+                                <th>Campus</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in recentDocuments %}
+                            <tr>
+                                <td>
+                                    <div class="vision-table-company">
+                                        <span class="vision-table-avatar">{{ doc.campus|slice(0, 1)|upper }}</span>
+                                        <span>{{ doc.campus }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="vision-table-badge">{{ doc.documentType|slice(0, 2)|upper }}</span>
+                                </td>
+                                <td>₱{{ doc.amount|number_format(2, '.', ',') }}</td>
+                                <td>
+                                    <div class="vision-progress">
+                                        <div class="vision-progress-bar" style="width: 0%"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="vision-table-empty">No documents yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-5">
+            <div class="vision-card vision-timeline-card h-100">
+                <div class="vision-card-header">
+                    <h3 class="vision-card-title">Recent Activity</h3>
+                    <p class="vision-card-subtitle">Latest document entries</p>
+                </div>
+                <ul class="vision-timeline">
+                    {% for doc in recentDocuments %}
+                    <li class="vision-timeline-item">
+                        <span class="vision-timeline-icon"><i class="bi bi-bell"></i></span>
+                        <div class="vision-timeline-content">
+                            <p class="vision-timeline-title">{{ doc.particulars|length > 40 ? doc.particulars|slice(0, 40) ~ '…' : doc.particulars }}</p>
+                            <span class="vision-timeline-date">{{ doc.createdAt ? doc.createdAt|app_datetime : '—' }}</span>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="vision-timeline-item vision-timeline-item--empty">
+                        <span class="vision-timeline-icon"><i class="bi bi-inbox"></i></span>
+                        <div class="vision-timeline-content">
+                            <p class="vision-timeline-title">No activity yet</p>
+                            <span class="vision-timeline-date">—</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const visionColors = {
+        grid: 'rgba(226, 232, 240, 0.08)',
+        text: 'rgba(160, 174, 192, 0.8)',
+        blue: '#0075FF',
+        blueDark: '#4318FF',
+        gradientStart: 'rgba(0, 117, 255, 0.4)',
+        gradientEnd: 'rgba(0, 117, 255, 0)',
+    };
+
+    Chart.defaults.color = visionColors.text;
+    Chart.defaults.borderColor = visionColors.grid;
+    Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+
+    const overviewCanvas = document.getElementById('documents-overview-chart');
+    if (overviewCanvas) {
+        const labels = JSON.parse(overviewCanvas.dataset.labels || '[]');
+        const values = JSON.parse(overviewCanvas.dataset.values || '[]');
+        const ctx = overviewCanvas.getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+        gradient.addColorStop(0, visionColors.gradientStart);
+        gradient.addColorStop(1, visionColors.gradientEnd);
+
+        new Chart(overviewCanvas, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Documents',
+                        data: values,
+                        borderColor: visionColors.blue,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        borderWidth: 3,
+                    },
+                    {
+                        label: 'Trend',
+                        data: values,
+                        borderColor: visionColors.blueDark,
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        borderWidth: 2,
+                        borderDash: [0],
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { intersect: false, mode: 'index' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#111c44',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 12,
+                    },
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { padding: 8 },
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: visionColors.grid },
+                        ticks: { padding: 12 },
+                    },
+                },
+            },
+        });
+    }
+
+    const barCanvas = document.getElementById('activity-bar-chart');
+    if (barCanvas) {
+        new Chart(barCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                datasets: [{
+                    data: [0, 0, 0, 0, 0, 0, 0],
+                    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                    borderRadius: 4,
+                    barThickness: 6,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { display: false } },
+                    y: { display: false, beginAtZero: true },
+                },
+            },
+        });
+    }
+});
+</script>
+{% endblock %}

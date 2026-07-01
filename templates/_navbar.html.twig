@@ -1,0 +1,67 @@
+<header class="top-navbar" id="top-navbar">
+    <div class="navbar-search-wrap">
+        <form class="navbar-search-form" id="navbar-search-form" action="{{ path('app_reports') }}" method="get" role="search">
+            <i class="bi bi-search"></i>
+            <input type="search"
+                   id="navbar-search-input"
+                   name="q"
+                   class="navbar-search-input"
+                   placeholder="Search documents, campus, particulars..."
+                   autocomplete="off"
+                   aria-label="Search documents">
+            <div class="navbar-search-dropdown d-none" id="navbar-search-dropdown"></div>
+        </form>
+    </div>
+
+    <div class="navbar-actions">
+        <div class="navbar-clock" data-live-clock aria-live="polite" title="Philippine Standard Time ({{ appTimezone }})"></div>
+
+        <div class="navbar-dropdown-wrap">
+            <button type="button"
+                    class="navbar-icon-btn"
+                    id="navbar-notifications-btn"
+                    aria-label="Notifications"
+                    aria-expanded="false"
+                    aria-haspopup="true">
+                <i class="bi bi-bell"></i>
+                {% if navbarUnreadCount > 0 %}
+                    <span class="navbar-badge" id="navbar-unread-badge">{{ navbarUnreadCount > 9 ? '9+' : navbarUnreadCount }}</span>
+                {% else %}
+                    <span class="navbar-badge d-none" id="navbar-unread-badge">0</span>
+                {% endif %}
+            </button>
+            <div class="navbar-dropdown d-none" id="navbar-notifications-dropdown" role="menu"></div>
+        </div>
+
+        <div class="navbar-dropdown-wrap">
+            <button type="button"
+                    class="navbar-profile-btn"
+                    id="navbar-profile-btn"
+                    aria-label="Profile"
+                    aria-expanded="false"
+                    aria-haspopup="true">
+                {% if navbarProfilePictureUrl %}
+                    <img src="{{ navbarProfilePictureUrl ~ '?v=' ~ navbarUser.updatedAt|date('U') }}" alt="{{ navbarUser.fullName }}" class="navbar-avatar-img" id="navbar-avatar-img">
+                {% else %}
+                    <span class="navbar-avatar-initials" id="navbar-avatar-initials">{{ navbarUser.initials }}</span>
+                {% endif %}
+            </button>
+        </div>
+    </div>
+</header>
+
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel">My Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="profile-modal-body">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

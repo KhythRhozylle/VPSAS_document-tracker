@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Documents — VPSAS{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-header-row">
+        <div>
+            <h1>Documents</h1>
+            <p>Add and manage document records</p>
+        </div>
+        <div class="live-clock-card" data-live-clock aria-live="polite"></div>
+    </div>
+</div>
+
+<div class="content-card">
+    <h2 class="card-title">Add New Document</h2>
+
+    {{ form_start(form, { attr: { class: 'document-form', novalidate: 'novalidate', id: 'document-create-form' } }) }}
+        <div class="row g-3">
+            <div class="col-md-6">{{ form_row(form.dateApproved) }}</div>
+            <div class="col-md-6">{{ form_row(form.campus) }}</div>
+            <div class="col-md-6">{{ form_row(form.documentType) }}</div>
+            <div class="col-md-6 document-type-other-wrap d-none">{{ form_row(form.documentTypeOther) }}</div>
+            <div class="col-md-6">{{ form_row(form.status) }}</div>
+            <div class="col-md-6">{{ form_row(form.amount) }}</div>
+            <div class="col-12">{{ form_row(form.particulars) }}</div>
+            <div class="col-12">{{ form_row(form.nature) }}</div>
+        </div>
+
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary-gradient">
+                <i class="bi bi-save me-1"></i> Save Document
+            </button>
+            <button type="reset" class="btn btn-outline-soft">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+            </button>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

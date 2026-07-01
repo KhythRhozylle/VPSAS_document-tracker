@@ -1,0 +1,89 @@
+{% set effectivePerPage = perPage > 0 ? perPage : (total > 0 ? total : 1) %}
+{% set totalPages = (total / effectivePerPage)|round(0, 'ceil') %}
+{% set totalPages = totalPages < 1 ? 1 : totalPages %}
+
+<div class="table-responsive">
+    <table class="table table-modern">
+        <thead>
+            <tr>
+                <th>
+                    <span class="sortable-header {{ sort == 'date_approved' ? 'active' : '' }}" data-action="sort" data-sort="date_approved">
+                        Date Approved
+                        <i class="bi bi-chevron-{{ sort == 'date_approved' and direction == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                    </span>
+                </th>
+                <th>
+                    <span class="sortable-header {{ sort == 'campus' ? 'active' : '' }}" data-action="sort" data-sort="campus">
+                        Campus
+                        <i class="bi bi-chevron-{{ sort == 'campus' and direction == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                    </span>
+                </th>
+                <th>Document Type</th>
+                <th>Status</th>
+                <th>Particulars</th>
+                <th>
+                    <span class="sortable-header {{ sort == 'amount' ? 'active' : '' }}" data-action="sort" data-sort="amount">
+                        Amount
+                        <i class="bi bi-chevron-{{ sort == 'amount' and direction == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                    </span>
+                </th>
+                <th>Nature</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if documents is empty %}
+                <tr>
+                    <td colspan="9" class="table-empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No documents found matching your filters.</p>
+                    </td>
+                </tr>
+            {% else %}
+                {% for document in documents %}
+                    <tr>
+                        <td>{{ document.dateApproved|date('M d, Y') }}</td>
+                        <td>{{ document.campus }}</td>
+                        <td>{{ document.documentType }}</td>
+                        <td><span class="badge status-badge status-badge--{{ document.status|lower }}">{{ document.status }}</span></td>
+                        <td>{{ document.particulars|length > 40 ? document.particulars|slice(0, 40) ~ '…' : document.particulars }}</td>
+                        <td>₱{{ document.amount|number_format(2, '.', ',') }}</td>
+                        <td>{{ document.nature }}</td>
+                        <td>{{ document.createdAt|app_datetime }}</td>
+                        <td>
+                            <button type="button" class="btn-action view" data-action="view" data-id="{{ document.id }}" title="View"><i class="bi bi-eye"></i></button>
+                            <button type="button" class="btn-action edit" data-action="edit" data-id="{{ document.id }}" title="Edit"><i class="bi bi-pencil"></i></button>
+                            <button type="button" class="btn-action delete" data-action="delete" data-id="{{ document.id }}" data-campus="{{ document.campus }}" data-token="{{ csrf_token('delete' ~ document.id) }}" title="Delete"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination-modern">
+    <div class="page-info">
+        Showing page {{ page }} of {{ totalPages }} ({{ total }} record{{ total != 1 ? 's' : '' }})
+    </div>
+    <nav aria-label="Reports pagination">
+        <ul class="pagination">
+            <li class="page-item {{ page <= 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="#" data-action="page" data-page="{{ page - 1 }}">Previous</a>
+            </li>
+            {% for p in 1..totalPages %}
+                {% if totalPages <= 7 or p == 1 or p == totalPages or (p >= page - 1 and p <= page + 1) %}
+                    <li class="page-item {{ p == page ? 'active' : '' }}">
+                        <a class="page-link" href="#" data-action="page" data-page="{{ p }}">{{ p }}</a>
+                    </li>
+                {% elseif p == page - 2 or p == page + 2 %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                {% endif %}
+            {% endfor %}
+            <li class="page-item {{ page >= totalPages ? 'disabled' : '' }}">
+                <a class="page-link" href="#" data-action="page" data-page="{{ page + 1 }}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

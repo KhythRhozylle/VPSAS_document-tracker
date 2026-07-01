@@ -1,0 +1,36 @@
+services:
+    mysql:
+      restart: unless-stopped
+      image: mysql:8.0
+      environment:
+        MYSQL_ROOT_PASSWORD: docu_tracker
+        MYSQL_DATABASE: docu_tracker
+        MYSQL_USER: docu_tracker_user
+        MYSQL_PASSWORD: docu_tracker_password 
+      ports:
+      - "3308:3306" 
+      volumes:
+      - mysql_data:/var/lib/mysql
+      networks:
+      - docu_tracker_network 
+
+    
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        restart: unless-stopped
+        environment:
+          PMA_HOST: mysql
+          PMA_USER: docu_tracker_user 
+          PMA_PASSWORD: docu_tracker_password 
+        ports:
+        - "8080:80"
+        depends_on:
+        - mysql
+        networks:
+        - docu_tracker_network 
+
+volumes:
+  mysql_data:
+
+networks:
+  docu_tracker_network: 

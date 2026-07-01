@@ -19,5 +19,17 @@ services:
     App\:
         resource: '../src/'
 
+    App\Service\ProfileService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Service\DateTimeFormatterService:
+        arguments:
+            $timezone: '%app.timezone%'
+
+    App\EventSubscriber\TimezoneSubscriber:
+        arguments:
+            $timezone: '%app.timezone%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

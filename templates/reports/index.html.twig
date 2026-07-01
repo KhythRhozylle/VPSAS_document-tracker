@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reports — VPSAS{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-header-row">
+        <div>
+            <h1>Reports</h1>
+            <p>Search, filter, and manage document records</p>
+        </div>
+        <div class="live-clock-card" data-live-clock aria-live="polite"></div>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="reports-toolbar module-toolbar">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="search" id="reports-search" class="form-control" placeholder="Search campus, type, particulars, status…" value="{{ search }}">
+        </div>
+        <div class="module-filters">
+            <input type="date" id="reports-date-from" class="form-control form-control-sm" value="{{ dateFrom }}" aria-label="Date from">
+            <input type="date" id="reports-date-to" class="form-control form-control-sm" value="{{ dateTo }}" aria-label="Date to">
+            <select id="reports-campus" class="form-select form-select-sm">
+                <option value="">All Campuses</option>
+                {% for campusOption in campuses %}
+                    <option value="{{ campusOption }}" {{ campus == campusOption ? 'selected' : '' }}>{{ campusOption }}</option>
+                {% endfor %}
+            </select>
+            <select id="reports-document-type" class="form-select form-select-sm">
+                <option value="">All Document Types</option>
+                {% for typeOption in documentTypes %}
+                    <option value="{{ typeOption }}" {{ documentType == typeOption ? 'selected' : '' }}>{{ typeOption }}</option>
+                {% endfor %}
+            </select>
+            <select id="reports-status" class="form-select form-select-sm">
+                <option value="">All Statuses</option>
+                {% for statusOption in statuses %}
+                    <option value="{{ statusOption }}" {{ status == statusOption ? 'selected' : '' }}>{{ statusOption }}</option>
+                {% endfor %}
+            </select>
+            <select id="reports-user-role" class="form-select form-select-sm">
+                <option value="">All User Roles</option>
+                {% for roleOption in userRoles %}
+                    <option value="{{ roleOption }}" {{ userRole == roleOption ? 'selected' : '' }}>{{ roleOption }}</option>
+                {% endfor %}
+            </select>
+            <select id="reports-sort" class="form-select form-select-sm">
+                <option value="desc" {{ direction == 'desc' ? 'selected' : '' }}>Newest First</option>
+                <option value="asc" {{ direction == 'asc' ? 'selected' : '' }}>Oldest First</option>
+            </select>
+        </div>
+        <div class="export-actions">
+            <button type="button" class="btn btn-outline-secondary btn-sm export-btn" id="btn-print" data-export-type="print">
+                <i class="bi bi-printer"></i> Print
+            </button>
+            <button type="button" class="btn btn-outline-danger btn-sm export-btn" id="btn-export-pdf" data-export-type="pdf">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+            </button>
+            <button type="button" class="btn btn-outline-success btn-sm export-btn" id="btn-export-excel" data-export-type="excel">
+                <i class="bi bi-file-earmark-excel"></i> Excel
+            </button>
+            <button type="button" class="btn btn-outline-success btn-sm export-btn" id="btn-export-csv" data-export-type="csv">
+                <i class="bi bi-filetype-csv"></i> CSV
+            </button>
+        </div>
+    </div>
+
+    <div class="module-table-controls">
+        {% include '_per_page.html.twig' with { selectId: 'reports-per-page', perPageOptions: perPageOptions, perPageSelected: perPageSelected } %}
+    </div>
+
+    <div id="reports-root"
+         data-sort="{{ sort }}"
+         data-direction="{{ direction }}"
+         data-page="{{ page }}"
+         data-per-page="{{ perPageSelected }}">
+        <div id="reports-table-container">
+            {% include 'reports/_table.html.twig' %}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Document Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="view-modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-soft" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="edit-form-container"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="delete-document-label"></strong>? This action cannot be undone.</p>
+                <input type="hidden" id="delete-document-id">
+                <input type="hidden" id="delete-csrf-token">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-soft" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="export-loading-overlay d-none" id="export-loading-overlay">
+    <div class="export-loading-spinner">
+        <div class="spinner-border text-primary"></div>
+        <p>Preparing export…</p>
+    </div>
+</div>
+{% endblock %}

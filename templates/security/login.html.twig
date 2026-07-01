@@ -1,0 +1,35 @@
+{% extends 'security/auth_base.html.twig' %}
+
+{% block title %}Sign In — VPSAS{% endblock %}
+
+{% block body %}
+<h2 class="auth-title">Sign In</h2>
+<p class="auth-subtitle">Enter your credentials to access the system</p>
+
+{% if error %}
+    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+{% endif %}
+
+<form method="post" action="{{ path('app_login') }}" class="auth-form">
+    <div class="mb-3">
+        <label for="username" class="form-label">Email</label>
+        <input type="email" class="form-control" id="username" name="_username" value="{{ last_username }}" required autofocus autocomplete="username">
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="_password" required autocomplete="current-password">
+    </div>
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+    <button type="submit" class="btn btn-primary-gradient w-100">Sign In</button>
+</form>
+
+<p class="auth-footer text-center mt-3 mb-0">
+    Don't have an account? <a href="{{ path('app_register') }}">Sign Up</a>
+</p>
+
+<div class="auth-demo mt-4 pt-3 border-top border-secondary-subtle">
+    <small class="text-muted d-block mb-1">Demo accounts:</small>
+    <small class="text-muted">Admin: admin@vpsas.local / Admin123!</small><br>
+    <small class="text-muted">Staff: staff@vpsas.local / Staff123!</small>
+</div>
+{% endblock %}

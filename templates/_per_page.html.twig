@@ -1,0 +1,9 @@
+<div class="entries-per-page">
+    <label for="{{ selectId }}">Show:</label>
+    <select id="{{ selectId }}" class="form-select form-select-sm entries-per-page-select" aria-label="Entries per page">
+        {% for option in perPageOptions %}
+            <option value="{{ option }}" {{ perPageSelected == option ? 'selected' : '' }}>{{ option }} Entries</option>
+        {% endfor %}
+        <option value="all" {{ perPageSelected == 'all' ? 'selected' : '' }}>All Entries</option>
+    </select>
+</div>

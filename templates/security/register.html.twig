@@ -1,0 +1,25 @@
+{% extends 'security/auth_base.html.twig' %}
+
+{% block title %}Sign Up — VPSAS{% endblock %}
+
+{% block body %}
+<h2 class="auth-title">Create Account</h2>
+<p class="auth-subtitle">Register as a staff member</p>
+
+{{ form_start(form, { attr: { class: 'auth-form' } }) }}
+    <div class="row g-3">
+        <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+        <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+        <div class="col-12">{{ form_row(form.email) }}</div>
+        <div class="col-md-6">{{ form_row(form.department) }}</div>
+        <div class="col-md-6">{{ form_row(form.jobTitle) }}</div>
+        <div class="col-12">{{ form_row(form.plainPassword.first) }}</div>
+        <div class="col-12">{{ form_row(form.plainPassword.second) }}</div>
+    </div>
+    <button type="submit" class="btn btn-primary-gradient w-100 mt-3">Create Account</button>
+{{ form_end(form) }}
+
+<p class="auth-footer text-center mt-3 mb-0">
+    Already have an account? <a href="{{ path('app_login') }}">Sign In</a>
+</p>
+{% endblock %}

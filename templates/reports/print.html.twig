@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VPSAS Document Records — Print</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; color: #1F2937; }
+        h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+        .meta { color: #6B7280; margin-bottom: 1.5rem; font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { border: 1px solid #E5E7EB; padding: 0.5rem 0.75rem; text-align: left; }
+        th { background: #F8FAFC; font-weight: 600; }
+        tr:nth-child(even) { background: #FAFAFA; }
+        @media print {
+            body { margin: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <h1>VPSAS Document Records</h1>
+    <p class="meta">
+        Generated on {{ 'now'|date('F d, Y h:i A') }}
+        {% if search %} — Filter: "{{ search }}"{% endif %}
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Date Approved</th>
+                <th>Campus</th>
+                <th>Type of Document</th>
+                <th>Particulars</th>
+                <th>Amount</th>
+                <th>Nature of Document</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+                <tr>
+                    <td>{{ document.dateApproved|date('Y-m-d') }}</td>
+                    <td>{{ document.campus }}</td>
+                    <td>{{ document.documentType }}</td>
+                    <td>{{ document.particulars }}</td>
+                    <td>{{ document.amount|number_format(2, '.', ',') }}</td>
+                    <td>{{ document.nature }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6">No records found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>window.onload = () => window.print();</script>
+</body>
+</html>
