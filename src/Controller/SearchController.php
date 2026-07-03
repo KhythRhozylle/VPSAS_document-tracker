@@ -23,7 +23,19 @@ final class SearchController extends AbstractController
             ]);
         }
 
-        $result = $documentRepository->findFiltered($query, 'date_approved', 'desc', 1, 8);
+        $result = $documentRepository->findFiltered(
+            $query,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'date_approved',
+            'desc',
+            1,
+            50,
+        );
 
         return $this->render('search/_dropdown.html.twig', [
             'query' => $query,

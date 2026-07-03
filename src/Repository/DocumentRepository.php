@@ -170,6 +170,51 @@ class DocumentRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    private function resolveMonthNumber(string $search): ?int
+    {
+        $normalized = strtolower(trim($search));
+        if ($normalized === '') {
+            return null;
+        }
+
+        $months = [
+            'january' => 1,
+            'jan' => 1,
+            'february' => 2,
+            'feb' => 2,
+            'march' => 3,
+            'mar' => 3,
+            'april' => 4,
+            'apr' => 4,
+            'may' => 5,
+            'june' => 6,
+            'jun' => 6,
+            'july' => 7,
+            'jul' => 7,
+            'august' => 8,
+            'aug' => 8,
+            'september' => 9,
+            'sept' => 9,
+            'sep' => 9,
+            'october' => 10,
+            'oct' => 10,
+            'november' => 11,
+            'nov' => 11,
+            'december' => 12,
+            'dec' => 12,
+        ];
+
+        if (isset($months[$normalized])) {
+            return $months[$normalized];
+        }
+
+        if (preg_match('/^(0?[1-9]|1[0-2])$/', $normalized, $matches) === 1) {
+            return (int) $matches[1];
+        }
+
+        return null;
+    }
+
     private function applyFilters(
         \Doctrine\ORM\QueryBuilder $qb,
         string $search,
@@ -182,15 +227,43 @@ class DocumentRepository extends ServiceEntityRepository
     ): void {
         $search = trim($search);
         if ($search !== '') {
-            $qb->andWhere(
-                $qb->expr()->orX(
-                    $qb->expr()->like('d.campus', ':search'),
-                    $qb->expr()->like('d.documentType', ':search'),
-                    $qb->expr()->like('d.particulars', ':search'),
-                    $qb->expr()->like('d.nature', ':search'),
-                    $qb->expr()->like('d.status', ':search'),
-                )
-            )->setParameter('search', '%'.$search.'%');
+            $searchPattern = '%'.strtolower($search).'%';
+            $searchConditions = [];
+            $metadata = $this->getClassMetadata(Document::class);
+
+            foreach ($metadata->getFieldNames() as $fieldName) {
+                $fieldType = $metadata->getTypeOfField($fieldName);
+                if (!in_array($fieldType, ['date', 'datetime', 'datetimetz', 'decimal', 'integer', 'smallint', 'bigint', 'float', 'string', 'text'], true)) {
+                    continue;
+                }
+
+                $searchConditions[] = $qb->expr()->like(sprintf("LOWER(CONCAT(COALESCE(d.%s, ''), ''))", $fieldName), ':search');
+            }
+
+            $monthNumber = $this->resolveMonthNumber($search);
+            if ($monthNumber !== null) {
+                $searchConditions[] = $qb->expr()->andX(
+                    $qb->expr()->gte('d.dateApproved', ':monthStartDate'),
+                    $qb->expr()->lt('d.dateApproved', ':monthEndDate'),
+                );
+                $searchConditions[] = $qb->expr()->andX(
+                    $qb->expr()->gte('d.createdAt', ':monthStartDate'),
+                    $qb->expr()->lt('d.createdAt', ':monthEndDate'),
+                );
+            }
+
+            if ($searchConditions !== []) {
+                $qb->andWhere($qb->expr()->orX(...$searchConditions));
+                $qb->setParameter('search', $searchPattern);
+
+                if ($monthNumber !== null) {
+                    $currentYear = (int) date('Y');
+                    $monthStartDate = new \DateTimeImmutable(sprintf('%d-%02d-01 00:00:00', $currentYear, $monthNumber));
+                    $monthEndDate = $monthStartDate->modify('+1 month');
+                    $qb->setParameter('monthStartDate', $monthStartDate);
+                    $qb->setParameter('monthEndDate', $monthEndDate);
+                }
+            }
         }
 
         if ($campus !== null && $campus !== '') {

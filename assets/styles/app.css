@@ -858,9 +858,8 @@ body {
 
 .status-badge--pending { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
 .status-badge--approved { background: rgba(1, 181, 116, 0.2); color: var(--vision-green); }
-.status-badge--rejected { background: rgba(227, 26, 26, 0.2); color: var(--vision-red); }
-.status-badge--completed { background: rgba(0, 117, 255, 0.2); color: var(--vision-accent); }
-.status-badge--archived { background: rgba(160, 174, 192, 0.2); color: var(--vision-text-muted); }
+.status-badge--cancelled { background: rgba(227, 26, 26, 0.2); color: var(--vision-red); }
+.status-badge--recommending-approval { background: rgba(0, 117, 255, 0.2); color: var(--vision-accent); }
 
 .table-empty-state {
     text-align: center;

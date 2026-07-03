@@ -46,9 +46,9 @@
                         <td>{{ document.dateApproved|date('M d, Y') }}</td>
                         <td>{{ document.campus }}</td>
                         <td>{{ document.documentType }}</td>
-                        <td><span class="badge status-badge status-badge--{{ document.status|lower }}">{{ document.status }}</span></td>
+                        <td><span class="badge status-badge status-badge--{{ document.status|lower|replace({' ': '-'}) }}">{{ document.status }}</span></td>
                         <td>{{ document.particulars|length > 40 ? document.particulars|slice(0, 40) ~ '…' : document.particulars }}</td>
-                        <td>₱{{ document.amount|number_format(2, '.', ',') }}</td>
+                        <td>{{ document.amount is not empty ? '₱' ~ document.amount|number_format(2, '.', ',') : '-' }}</td>
                         <td>{{ document.nature }}</td>
                         <td>{{ document.createdAt|app_datetime }}</td>
                         <td>

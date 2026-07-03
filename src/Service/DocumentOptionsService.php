@@ -34,9 +34,8 @@ class DocumentOptionsService
     public const DOCUMENT_STATUSES = [
         'Pending',
         'Approved',
-        'Rejected',
-        'Completed',
-        'Archived',
+        'Cancelled',
+        'Recommending Approval',
     ];
 
     public function __construct(

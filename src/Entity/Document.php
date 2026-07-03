@@ -34,8 +34,7 @@ class Document
     #[Assert\NotBlank(message: 'Particulars is required.')]
     private ?string $particulars = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
-    #[Assert\NotBlank(message: 'Amount is required.')]
+    #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2, nullable: true)]
     #[Assert\PositiveOrZero(message: 'Amount must be a valid number.')]
     private ?string $amount = null;
 
